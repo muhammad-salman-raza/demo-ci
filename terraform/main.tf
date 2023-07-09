@@ -2,41 +2,74 @@ provider "aws" {
   region = var.aws_region
 }
 
-data "aws_caller_identity" "current" {}
-
-# Create an S3 bucket to store the Dockerrun file
-resource "aws_s3_bucket" "bucket" {
-  bucket = var.s3_bucket_name
-  acl    = "private"
+resource "aws_ecr_repository" "repository" {
+  name = var.ecr_repository_name
 }
 
-# Upload the Dockerrun file to the S3 bucket
-resource "aws_s3_bucket_object" "object" {
-  bucket = aws_s3_bucket.bucket.bucket
-  key    = "Dockerrun.aws.json"
-  source = "Dockerrun.aws.json"
-  acl    = "private"
+resource "aws_ecr_lifecycle_policy" "lifecycle_policy" {
+  repository = aws_ecr_repository.repository.name
+
+  policy = <<EOF
+{
+  "rules": [
+    {
+      "rulePriority": 10,
+      "description": "Expire images older than 14 days",
+      "selection": {
+        "tagStatus": "any",
+        "countType": "sinceImagePushed",
+        "countUnit": "days",
+        "countNumber": 14
+      },
+      "action": {
+        "type": "expire"
+      }
+    }
+  ]
+}
+EOF
 }
 
-# Create an Elastic Beanstalk application
-resource "aws_elastic_beanstalk_application" "app" {
-  name        = var.eb_application_name
-  description = "My application"
+resource "aws_ecs_cluster" "cluster" {
+  name = var.ecs_cluster_name
 }
 
-# Create an Elastic Beanstalk application version
-resource "aws_elastic_beanstalk_application_version" "version" {
-  application = aws_elastic_beanstalk_application.app.name
-  name        = var.docker_image_version
-  description = "My version"
-  bucket      = aws_s3_bucket_object.object.bucket
-  key         = aws_s3_bucket_object.object.key
+resource "aws_ecs_task_definition" "task_definition" {
+  family                   = var.ecs_task_definition_family
+  requires_compatibilities = ["FARGATE"]
+  network_mode             = "awsvpc"
+
+  container_definitions = <<EOF
+[
+  {
+    "name": "backend",
+    "image": "${aws_ecr_repository.repository.repository_url}:${var.docker_image_tag}",
+    "portMappings": [
+      {
+        "containerPort": 3000,
+        "protocol": "tcp"
+      }
+    ],
+    "environment": [
+      {
+        "name": "NODE_ENV",
+        "value": "production"
+      }
+    ]
+  }
+]
+EOF
 }
 
-# Create an Elastic Beanstalk environment
-resource "aws_elastic_beanstalk_environment" "environment" {
-  name                = var.eb_environment_name
-  application         = aws_elastic_beanstalk_application.app.name
-  version_label       = aws_elastic_beanstalk_application_version.version.name
-  solution_stack_name = "64bit Amazon Linux 2018.03 v2.15.0 running Multi-container Docker 19.03.13-ce (Generic)"
+resource "aws_ecs_service" "service" {
+  name            = var.ecs_service_name
+  cluster         = aws_ecs_cluster.cluster.id
+  task_definition = aws_ecs_task_definition.task_definition.arn
+  desired_count   = var.ecs_service_desired_count
+
+  network_configuration {
+    subnets         = var.subnets
+    security_groups = var.security_groups
+    assign_public_ip = true
+  }
 }
