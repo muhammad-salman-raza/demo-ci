@@ -22,10 +22,10 @@ jobs:
       - name: Build and push Docker images
         run: |
           docker-compose build
-          docker tag my-app_backend:latest ${{ secrets.DOCKER_HUB_USERNAME }}/backend:${{ github.sha }}
-          docker tag my-app_frontend:latest ${{ secrets.DOCKER_HUB_USERNAME }}/frontend:${{ github.sha }}
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/backend:${{ github.sha }}
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/frontend:${{ github.sha }}
+          docker tag demo-ci_backend:latest {DOCKER_HUB_USERNAME}/backend:{GITHUB_SHA}
+          docker tag demo-ci_frontend:latest {DOCKER_HUB_USERNAME}/frontend:{GITHUB_SHA}
+          docker push {DOCKER_HUB_USERNAME}/backend:{GITHUB_SHA}
+          docker push {DOCKER_HUB_USERNAME}/frontend:{GITHUB_SHA}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
