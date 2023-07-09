@@ -22,7 +22,7 @@ jobs:
       - name: Build and push Docker images
         run: |
           docker-compose build
-          docker tag my-demo-ci_backend:latest ${{ secrets.DOCKER_HUB_USERNAME }}/backend:${{ github.sha }}
+          docker tag demo-ci_backend:latest ${{ secrets.DOCKER_HUB_USERNAME }}/backend:${{ github.sha }}
           docker tag demo-ci_frontend:latest ${{ secrets.DOCKER_HUB_USERNAME }}/frontend:${{ github.sha }}
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/backend:${{ github.sha }}
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/frontend:${{ github.sha }}
