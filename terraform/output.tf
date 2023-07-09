@@ -14,6 +14,7 @@ output "eb_environment_name" {
 }
 
 output "eb_environment_url" {
-  description = "The URL of the Elastic Beanstalk environment"
-  value       = aws_elastic_beanstalk_environment.environment.endpoint
+  description = "URL of the Elastic Beanstalk environment"
+  value       = aws_elastic_beanstalk_environment.environment.cname
 }
+
