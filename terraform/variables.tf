@@ -55,10 +55,10 @@ variable "ecs_service_desired_count" {
 
 variable "subnets" {
   description = "List of subnet IDs"
-  default     = ["subnet-12345678", "subnet-87654321"]
+  default     = ["subnet-74147113", "subnet-030c6a5f"]
 }
 
 variable "security_groups" {
   description = "List of security group IDs"
-  default     = ["sg-12345678", "sg-87654321"]
+  default     = ["sg-b3cc41f1"]
 }
