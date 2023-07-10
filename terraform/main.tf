@@ -38,9 +38,9 @@ resource "aws_ecs_task_definition" "task_definition" {
   family                   = var.ecs_task_definition_family
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
-
   cpu = "256"
   memory = "512"
+  execution_role_arn = "arn:aws:iam::647104268138:role/ecsTaskExecutionRole"
 
   container_definitions = <<EOF
 [
@@ -77,3 +77,4 @@ resource "aws_ecs_service" "service" {
     assign_public_ip = true
   }
 }
+
