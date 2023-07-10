@@ -1,20 +1,14 @@
-output "bucket_id" {
-  description = "The name of the S3 bucket"
-  value       = aws_s3_bucket.bucket.id
+output "ecs_cluster_id" {
+  description = "ID of the ECS cluster"
+  value       = aws_ecs_cluster.cluster.id
 }
 
-output "eb_app_name" {
-  description = "The name of the Elastic Beanstalk application"
-  value       = aws_elastic_beanstalk_application.app.name
+output "ecs_task_definition_arn" {
+  description = "ARN of the ECS task definition"
+  value       = aws_ecs_task_definition.task_definition.arn
 }
 
-output "eb_environment_name" {
-  description = "The name of the Elastic Beanstalk environment"
-  value       = aws_elastic_beanstalk_environment.environment.name
+output "ecs_service_id" {
+  description = "ID of the ECS service"
+  value       = aws_ecs_service.service.id
 }
-
-output "eb_environment_url" {
-  description = "URL of the Elastic Beanstalk environment"
-  value       = aws_elastic_beanstalk_environment.environment.cname
-}
-
