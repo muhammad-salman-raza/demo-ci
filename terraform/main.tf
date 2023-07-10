@@ -66,15 +66,16 @@ EOF
 }
 
 resource "aws_ecs_service" "service" {
-  name            = var.ecs_service_name
-  cluster         = aws_ecs_cluster.cluster.id
-  task_definition = aws_ecs_task_definition.task_definition.arn
-  desired_count   = var.ecs_service_desired_count
+  name              = var.ecs_service_name
+  cluster           = aws_ecs_cluster.cluster.id
+  task_definition   = aws_ecs_task_definition.task_definition.arn
+  desired_count     = var.ecs_service_desired_count
+  launch_type       = "FARGATE"
 
   network_configuration {
-    subnets         = var.subnets
-    security_groups = var.security_groups
-    assign_public_ip = true
+    subnets            = var.subnets
+    security_groups    = var.security_groups
+    assign_public_ip   = true
   }
 }
 
