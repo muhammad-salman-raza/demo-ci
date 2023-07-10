@@ -40,7 +40,7 @@ resource "aws_ecs_task_definition" "task_definition" {
   network_mode             = "awsvpc"
   cpu = "256"
   memory = "512"
-  execution_role_arn = "arn:aws:iam::647104268138:role/ecsTaskExecutionRole"
+  execution_role_arn = "arn:aws:iam::647104268138:role/terraform"
 
   container_definitions = <<EOF
 [

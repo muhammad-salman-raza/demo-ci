@@ -45,7 +45,7 @@ variable "docker_image_tag" {
 
 variable "ecs_service_name" {
   description = "Name of the ECS service"
-  default     = "demo-ci-ecs-service"
+  default     = "demo-ci-ecs-service-1"
 }
 
 variable "ecs_service_desired_count" {
