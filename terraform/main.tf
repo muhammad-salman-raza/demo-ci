@@ -55,7 +55,8 @@ resource "aws_ecs_task_definition" "task_definition" {
         "name": "NODE_ENV",
         "value": "production"
       }
-    ]
+    ],
+    "memory": 512
   }
 ]
 EOF
