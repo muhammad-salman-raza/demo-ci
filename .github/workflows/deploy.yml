@@ -22,12 +22,12 @@ jobs:
 
       - name: Build and push Docker images
         run: |
-          echo ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.your-aws-region.amazonaws.com/demo-ci-backend:${{ github.sha }} > ./demo-ci-ecr-repo
-          echo ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.your-aws-region.amazonaws.com/demo-ci-frontend:${{ github.sha }} >> ./demo-ci-ecr-repo
-          docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.your-aws-region.amazonaws.com/demo-ci-backend:${{ github.sha }} backend/
-          docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.your-aws-region.amazonaws.com/demo-ci-frontend:${{ github.sha }} frontend/
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.your-aws-region.amazonaws.com/demo-ci-backend:${{ github.sha }}
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.your-aws-region.amazonaws.com/demo-ci-frontend:${{ github.sha }}
+          echo ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/demo-ci-backend:${{ github.sha }} > ./demo-ci-ecr-repo
+          echo ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/demo-ci-frontend:${{ github.sha }} >> ./demo-ci-ecr-repo
+          docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/demo-ci-backend:${{ github.sha }} backend/
+          docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/demo-ci-frontend:${{ github.sha }} frontend/
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/demo-ci-backend:${{ github.sha }}
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/demo-ci-frontend:${{ github.sha }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
