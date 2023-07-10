@@ -62,3 +62,13 @@ variable "security_groups" {
   description = "List of security group IDs"
   default     = ["sg-b3cc41f1"]
 }
+
+variable "docker_image_backend" {
+  description = "Docker image for backend"
+  type        = string
+}
+
+variable "docker_image_frontend" {
+  description = "Docker image for frontend"
+  type        = string
+}

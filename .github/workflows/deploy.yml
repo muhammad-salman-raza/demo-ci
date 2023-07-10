@@ -13,18 +13,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-east-1
 
       - name: Build and push Docker images
         run: |
-          echo ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/demo-ci-ecr-repo:${{ github.sha }} > ./demo-ci-ecr-repo
-          docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/demo-ci-ecr-repo:${{ github.sha }} backend/
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/demo-ci-ecr-repo:${{ github.sha }}
+          docker-compose build
+          docker tag demo-ci_backend:latest ${{ steps.login-ecr.outputs.registry }}/backend:${{ github.sha }}
+          docker tag demo-ci_frontend:latest ${{ steps.login-ecr.outputs.registry }}/frontend:${{ github.sha }}
+          docker push ${{ steps.login-ecr.outputs.registry }}/backend:${{ github.sha }}
+          docker push ${{ steps.login-ecr.outputs.registry }}/frontend:${{ github.sha }}    
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
@@ -35,4 +38,8 @@ jobs:
 
       - name: Terraform Apply
         working-directory: ./terraform
-        run: terraform apply -auto-approve
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: terraform apply -auto-approve -var="docker_image_backend=${{ steps.login-ecr.outputs.registry }}/backend:${{ github.sha }}" -var="docker_image_frontend=${{ steps.login-ecr.outputs.registry }}/frontend:${{ github.sha }}"
+
